@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { InviteGuestsModal } from './invite-guests-modal'
 import { ConfirmTripModal } from './confirm-trip-modal'
@@ -6,20 +6,35 @@ import { DestinationAndDateStep } from './steps/destination-and-date-step'
 import { InviteGuestsStep } from './steps/invite-guests-step'
 import { DateRange } from 'react-day-picker'
 import { api } from '../../lib/axios'
+import { LoginModal } from './login-modal'
 
 export function CreateTripPage() {
   const navigate = useNavigate()
   const [isGuestsInputOpen, setIsGuestsInputOpen] = useState(false)
   const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isConfirmTripModalOpen, setIsConfirmTripModalOpen] = useState(false)
   const [emailsToInvite, setEmailsToInvite] = useState<string[]>([])
 
   const [destination, setDestination] = useState('')
   const [ownerName, setOwnerName] = useState('')
   const [ownerEmail, setOwnerEmail] = useState('')
+  const [durationTrip, setDurationTrip] = useState<string | null>(null)
+
   const [eventStartAndEndDates, setEventStartAndEndDates] = useState<
     DateRange | undefined
   >()
+
+  console.log(durationTrip)
+
+  useEffect(() => {
+    const token = window.localStorage.getItem('refreshToken')
+    if (token) {
+      setIsLoginModalOpen(false)
+    } else {
+      setIsLoginModalOpen(true)
+    }
+  }, [])
 
   function openGuestsInput() {
     setIsGuestsInputOpen(true)
@@ -105,6 +120,10 @@ export function CreateTripPage() {
     navigate(`/trips/${tripId}`)
   }
 
+  function closeLoginModal() {
+    setIsLoginModalOpen(false)
+  }
+
   return (
     <div className="h-screen flex items-center justify-center bg-pattern bg-no-repeat bg-center">
       <div className="max-w-3xl w-full px-6 text-center space-y-10">
@@ -117,6 +136,7 @@ export function CreateTripPage() {
 
         <div className="space-y-4">
           <DestinationAndDateStep
+            setDurationTrip={setDurationTrip}
             closeGuestsInput={closeGuestsInput}
             isGuestsInputOpen={isGuestsInputOpen}
             openGuestsInput={openGuestsInput}
@@ -160,12 +180,16 @@ export function CreateTripPage() {
 
       {isConfirmTripModalOpen && (
         <ConfirmTripModal
+          destination={destination}
+          duration={durationTrip}
           closeConfirmTripModal={closeConfirmTripModal}
           createTrip={createTrip}
           setOwnerName={setOwnerName}
           setOwnerEmail={setOwnerEmail}
         />
       )}
+
+      {isLoginModalOpen && <LoginModal closeLoginModal={closeLoginModal} />}
     </div>
   )
 }

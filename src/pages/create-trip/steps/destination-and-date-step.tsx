@@ -12,6 +12,7 @@ interface DestinationAndDateStepProps {
   openGuestsInput: () => void
   setDestination: (destination: string) => void
   setEventStartAndEndDates: (dates: DateRange | undefined) => void
+  setDurationTrip: (duration: string | null) => void
 }
 
 export function DestinationAndDateStep({
@@ -21,6 +22,7 @@ export function DestinationAndDateStep({
   setDestination,
   setEventStartAndEndDates,
   eventStartAndEndDates,
+  setDurationTrip,
 }: DestinationAndDateStepProps) {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
 
@@ -41,6 +43,7 @@ export function DestinationAndDateStep({
           .concat(format(eventStartAndEndDates.to, "d' de 'LLL"))
       : null
 
+  setDurationTrip(displayedDate)
   return (
     <div className="h-16 bg-zinc-900 px-4 rounded-xl flex items-center shadow-shape gap-3">
       <div className="flex items-center gap-2 flex-1">
