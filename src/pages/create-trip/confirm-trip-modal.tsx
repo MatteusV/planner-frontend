@@ -1,23 +1,16 @@
 import { User, X } from 'lucide-react'
 import { FormEvent } from 'react'
+
 import { Button } from '../../components/button'
 
 interface ConfirmTripModalProps {
   closeConfirmTripModal: () => void
-  setOwnerName: (name: string) => void
-  setOwnerEmail: (email: string) => void
   createTrip: (event: FormEvent<HTMLFormElement>) => void
-  destination: string
-  duration: string | null
 }
 
 export function ConfirmTripModal({
   closeConfirmTripModal,
   createTrip,
-  setOwnerEmail,
-  setOwnerName,
-  destination,
-  duration,
 }: ConfirmTripModalProps) {
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
@@ -36,11 +29,7 @@ export function ConfirmTripModal({
           </div>
 
           <p className="text-sm text-zinc-400">
-            Para concluir a criação da viagem para{' '}
-            <span className="font-semibold text-zinc-100">{destination}</span>{' '}
-            nas datas de{' '}
-            <span className="font-semibold text-zinc-100">{duration}</span> seus
-            dados abaixo:
+            Para concluir a criação da viagem
           </p>
         </div>
 
@@ -52,7 +41,6 @@ export function ConfirmTripModal({
               name="name"
               placeholder="Seu nome completo"
               className="bg-transparent text-lg placeholder-zinc-400 outline-none flex-1"
-              onChange={(event) => setOwnerName(event.target.value)}
             />
           </div>
 
@@ -63,7 +51,6 @@ export function ConfirmTripModal({
               name="email"
               placeholder="Seu e-mail pessoal"
               className="bg-transparent text-lg placeholder-zinc-400 outline-none flex-1"
-              onChange={(event) => setOwnerEmail(event.target.value)}
             />
           </div>
 

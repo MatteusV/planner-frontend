@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
 import { CreateTripPage } from './pages/create-trip'
 import { TripDetailsPage } from './pages/trip-details'
-import { AuthPage } from './pages/auth'
+import { UserTripsPage } from './pages/user-trips'
 
 const router = createBrowserRouter([
   {
@@ -14,8 +15,8 @@ const router = createBrowserRouter([
     element: <TripDetailsPage />,
   },
   {
-    path: '/auth',
-    element: <AuthPage />,
+    path: '/user/trips',
+    element: <UserTripsPage />,
   },
 ])
 

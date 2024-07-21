@@ -1,9 +1,10 @@
-import { CircleCheck } from 'lucide-react'
-import { api } from '../../lib/axios'
-import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { CircleCheck } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+
+import { api } from '../../lib/axios'
 
 interface Activity {
   date: string
@@ -25,7 +26,7 @@ export function Activities() {
   }, [tripId])
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 overflow-y-scroll h-[calc(80vh-50px)]">
       {activities.map((category) => {
         return (
           <div key={category.date} className="space-y-2.5">

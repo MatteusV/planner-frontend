@@ -1,9 +1,9 @@
-/* eslint-disable camelcase */
 import { Calendar, LoaderCircle, Tag, X } from 'lucide-react'
 import { FormEvent, useState } from 'react'
-import { api } from '../../lib/axios'
 import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
+
+import { api } from '../../lib/axios'
 
 interface InviteNewGuestModalProps {
   closeInviteNewGuestModal: () => void
@@ -22,7 +22,6 @@ export function InviteNewGuestModal({
     setIsDisabledButton(true)
 
     const data = new FormData(event.currentTarget)
-
     const email = data.get('email')?.toString()
     const name = data.get('name')?.toString()
 
@@ -62,6 +61,7 @@ export function InviteNewGuestModal({
             <Tag className="text-zinc-400 size-5" />
             <input
               name="name"
+              id="email"
               placeholder="Qual é o nome?"
               className="bg-transparent text-lg placeholder-zinc-400 outline-none flex-1"
             />
@@ -72,6 +72,7 @@ export function InviteNewGuestModal({
             <input
               type="email"
               name="email"
+              id="email"
               placeholder="Qual é o email?"
               className="bg-transparent text-lg placeholder-zinc-400 outline-none flex-1"
             />

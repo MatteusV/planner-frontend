@@ -1,8 +1,9 @@
 import { AtSign, Eye, EyeOff, LockKeyhole, User, X } from 'lucide-react'
 import { FormEvent, useState } from 'react'
+import { toast } from 'sonner'
+
 import { Button } from '../../components/button'
 import { api } from '../../lib/axios'
-import { toast } from 'sonner'
 
 interface LoginModalProps {
   closeLoginModal: () => void
@@ -32,7 +33,7 @@ export function LoginModal({ closeLoginModal }: LoginModalProps) {
       toast.success('Registrado com sucesso.')
 
       setTimeout(() => {
-        window.location.reload()
+        window.location.href = '/'
       }, 1000)
     }
   }
@@ -54,7 +55,7 @@ export function LoginModal({ closeLoginModal }: LoginModalProps) {
       toast.success('Login feito com sucesso.')
 
       setTimeout(() => {
-        // window.location.reload()
+        window.location.reload()
       }, 1000)
     }
   }

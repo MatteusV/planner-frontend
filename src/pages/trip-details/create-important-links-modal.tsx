@@ -1,8 +1,9 @@
 import { Link2, Tag, X } from 'lucide-react'
-import { Button } from '../../components/button'
 import { FormEvent } from 'react'
-import { api } from '../../lib/axios'
 import { useParams } from 'react-router-dom'
+
+import { Button } from '../../components/button'
+import { api } from '../../lib/axios'
 
 interface CreateActivityModalProps {
   closeCreateImportantLinkModal: () => void

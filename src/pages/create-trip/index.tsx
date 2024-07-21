@@ -1,12 +1,28 @@
+import { UserCogIcon } from 'lucide-react'
 import { FormEvent, useEffect, useState } from 'react'
+import { DateRange } from 'react-day-picker'
 import { useNavigate } from 'react-router-dom'
-import { InviteGuestsModal } from './invite-guests-modal'
+import { toast } from 'sonner'
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../../components/ui/dropdown-menu'
+import { api } from '../../lib/axios'
 import { ConfirmTripModal } from './confirm-trip-modal'
+import { InviteGuestsModal } from './invite-guests-modal'
+import { LoginModal } from './login-modal'
 import { DestinationAndDateStep } from './steps/destination-and-date-step'
 import { InviteGuestsStep } from './steps/invite-guests-step'
-import { DateRange } from 'react-day-picker'
-import { api } from '../../lib/axios'
-import { LoginModal } from './login-modal'
+
+interface UsersToInvite {
+  name: string
+  email: string
+}
 
 export function CreateTripPage() {
   const navigate = useNavigate()
@@ -14,22 +30,19 @@ export function CreateTripPage() {
   const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isConfirmTripModalOpen, setIsConfirmTripModalOpen] = useState(false)
-  const [emailsToInvite, setEmailsToInvite] = useState<string[]>([])
+  const [refreshToken, setRefreshToken] = useState('')
+  const [usersToInvite, setUsersToInvite] = useState<UsersToInvite[]>([])
 
   const [destination, setDestination] = useState('')
-  const [ownerName, setOwnerName] = useState('')
-  const [ownerEmail, setOwnerEmail] = useState('')
-  const [durationTrip, setDurationTrip] = useState<string | null>(null)
 
   const [eventStartAndEndDates, setEventStartAndEndDates] = useState<
     DateRange | undefined
   >()
 
-  console.log(durationTrip)
-
   useEffect(() => {
     const token = window.localStorage.getItem('refreshToken')
     if (token) {
+      setRefreshToken(token)
       setIsLoginModalOpen(false)
     } else {
       setIsLoginModalOpen(true)
@@ -62,47 +75,55 @@ export function CreateTripPage() {
 
   function addNewEmailToInvite(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-
     const data = new FormData(event.currentTarget)
     const email = data.get('email')?.toString()
+    const name = data.get('name')?.toString()
 
     if (!email) {
+      toast.error('Digite o email do(a) participante')
       return
     }
 
-    if (emailsToInvite.includes(email)) {
+    if (!name) {
+      toast.error('Digite o nome do(a) participante')
       return
     }
 
-    setEmailsToInvite([...emailsToInvite, email])
+    const userAlreadyInvited = usersToInvite.find(
+      (user) => user.email === email,
+    )
+
+    if (userAlreadyInvited) {
+      toast.error(`Você ja convidou o(a) ${userAlreadyInvited.name}`)
+      return
+    }
+
+    setUsersToInvite([...usersToInvite, { email, name }])
 
     event.currentTarget.reset()
   }
 
   function removeEmailFromInvites(emailToRemove: string) {
-    const newEmailList = emailsToInvite.filter(
-      (email) => email !== emailToRemove,
+    const newEmailList = usersToInvite.filter(
+      (user) => user.email !== emailToRemove,
     )
 
-    setEmailsToInvite(newEmailList)
+    setUsersToInvite(newEmailList)
   }
 
-  async function createTrip(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
+  async function createTrip() {
     if (!destination) {
+      toast.error('Mencione o lugar da viagem!')
       return
     }
 
     if (!eventStartAndEndDates?.from || !eventStartAndEndDates?.to) {
+      toast.error('Mencione a data corretamente!')
       return
     }
 
-    if (emailsToInvite.length === 0) {
-      return
-    }
-
-    if (!ownerName || !ownerEmail) {
+    if (usersToInvite.length === 0) {
+      toast.error('Você não convidou ninguém para a viagem.')
       return
     }
 
@@ -110,9 +131,8 @@ export function CreateTripPage() {
       destination,
       starts_at: eventStartAndEndDates.from,
       ends_at: eventStartAndEndDates.to,
-      emails_to_invite: emailsToInvite,
-      owner_name: ownerName,
-      owner_email: ownerEmail,
+      emails_to_invite: usersToInvite,
+      token: refreshToken,
     })
 
     const { tripId } = response.data
@@ -136,7 +156,6 @@ export function CreateTripPage() {
 
         <div className="space-y-4">
           <DestinationAndDateStep
-            setDurationTrip={setDurationTrip}
             closeGuestsInput={closeGuestsInput}
             isGuestsInputOpen={isGuestsInputOpen}
             openGuestsInput={openGuestsInput}
@@ -147,9 +166,10 @@ export function CreateTripPage() {
 
           {isGuestsInputOpen && (
             <InviteGuestsStep
-              emailsToInvite={emailsToInvite}
+              usersToInvite={usersToInvite}
               openConfirmTripModal={openConfirmTripModal}
               openGuestsModal={openGuestsModal}
+              createTrip={createTrip}
             />
           )}
         </div>
@@ -167,11 +187,47 @@ export function CreateTripPage() {
           </a>
           .
         </p>
+        <div className="flex w-full justify-center gap-10">
+          {refreshToken ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <UserCogIcon />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-black border-zinc-500">
+                <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
+                <DropdownMenuSeparator className="border border-zinc-700" />
+                <DropdownMenuItem
+                  onClick={() => {
+                    navigate('/user/trips')
+                  }}
+                >
+                  Viagens
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    console.log('Configuração do usuario')
+                  }}
+                >
+                  Configuração
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <button
+              className="text-sm underline text-zinc-400"
+              onClick={() => {
+                setIsLoginModalOpen(true)
+              }}
+            >
+              Login / Registrar
+            </button>
+          )}
+        </div>
       </div>
 
       {isGuestsModalOpen && (
         <InviteGuestsModal
-          emailsToInvite={emailsToInvite}
+          usersToInvite={usersToInvite}
           addNewEmailToInvite={addNewEmailToInvite}
           closeGuestsModal={closeGuestsModal}
           removeEmailFromInvites={removeEmailFromInvites}
@@ -180,12 +236,8 @@ export function CreateTripPage() {
 
       {isConfirmTripModalOpen && (
         <ConfirmTripModal
-          destination={destination}
-          duration={durationTrip}
           closeConfirmTripModal={closeConfirmTripModal}
           createTrip={createTrip}
-          setOwnerName={setOwnerName}
-          setOwnerEmail={setOwnerEmail}
         />
       )}
 

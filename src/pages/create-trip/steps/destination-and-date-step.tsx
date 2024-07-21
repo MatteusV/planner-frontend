@@ -1,9 +1,12 @@
-import { MapPin, Calendar, Settings2, ArrowRight, X } from 'lucide-react'
-import { Button } from '../../../components/button'
+import 'react-day-picker/dist/style.css'
+
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+import { ArrowRight, Calendar, MapPin, Settings2, X } from 'lucide-react'
 import { useState } from 'react'
 import { DateRange, DayPicker } from 'react-day-picker'
-import 'react-day-picker/dist/style.css'
-import { format } from 'date-fns'
+
+import { Button } from '../../../components/button'
 
 interface DestinationAndDateStepProps {
   isGuestsInputOpen: boolean
@@ -12,7 +15,6 @@ interface DestinationAndDateStepProps {
   openGuestsInput: () => void
   setDestination: (destination: string) => void
   setEventStartAndEndDates: (dates: DateRange | undefined) => void
-  setDurationTrip: (duration: string | null) => void
 }
 
 export function DestinationAndDateStep({
@@ -22,7 +24,6 @@ export function DestinationAndDateStep({
   setDestination,
   setEventStartAndEndDates,
   eventStartAndEndDates,
-  setDurationTrip,
 }: DestinationAndDateStepProps) {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
 
@@ -38,12 +39,11 @@ export function DestinationAndDateStep({
     eventStartAndEndDates &&
     eventStartAndEndDates.from &&
     eventStartAndEndDates.to
-      ? format(eventStartAndEndDates.from, "d' de 'LLL")
+      ? format(eventStartAndEndDates.from, "d' de 'LLL", { locale: ptBR })
           .concat(' até ')
           .concat(format(eventStartAndEndDates.to, "d' de 'LLL"))
       : null
 
-  setDurationTrip(displayedDate)
   return (
     <div className="h-16 bg-zinc-900 px-4 rounded-xl flex items-center shadow-shape gap-3">
       <div className="flex items-center gap-2 flex-1">

@@ -1,5 +1,7 @@
 import { CheckCheck, Trash2, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+
 import {
   Table,
   TableBody,
@@ -9,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from '../../components/ui/table'
-import { useEffect, useState } from 'react'
 import { api } from '../../lib/axios'
 
 interface ManageGuestsModal {
@@ -88,7 +89,6 @@ export function ManageGuestsModal({
 
                 <TableCell className="space-x-4">
                   <button
-                    disabled={index === 0}
                     onClick={() => handleRemoveParticipant(participant.id)}
                     className="text-red-500 disabled:text-red-950"
                   >

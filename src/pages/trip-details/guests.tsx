@@ -1,7 +1,8 @@
 import { CheckCircle2, CircleDashed, Plus, UserCog } from 'lucide-react'
-import { Button } from '../../components/button'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+
+import { Button } from '../../components/button'
 import { api } from '../../lib/axios'
 import { InviteNewGuestModal } from './invite-new-guest-modal'
 

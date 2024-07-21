@@ -1,12 +1,17 @@
-import { Plus } from 'lucide-react'
+import { LoaderCircle, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import { CreateActivityModal } from './create-activity-modal'
-import { ImportantLinks } from './important-links'
-import { Guests } from './guests'
+import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'sonner'
+
+import { Button } from '../../components/button'
+import { api } from '../../lib/axios'
 import { Activities } from './activities'
+import { CreateActivityModal } from './create-activity-modal'
+import { CreateImportantLink } from './create-important-links-modal'
 import { DestinationAndDateHeader } from './destination-and-date-header'
+import { Guests } from './guests'
+import { ImportantLinks } from './important-links'
 import { ManageGuestsModal } from './manage-guests-modal'
-import { CreateImportantLink } from './create-important-links-modal copy'
 
 interface Activities {
   activities: {
@@ -16,8 +21,11 @@ interface Activities {
 }
 
 export function TripDetailsPage() {
+  const { tripId } = useParams()
+  const navigate = useNavigate()
   const [isCreateActivityModalOpen, setIsCreateActivityModalOpen] =
     useState(false)
+  const [isDeleteTripSending, setIsDeleteTripSending] = useState(false)
 
   const [isCreateImportantLinkModal, setIsCreateImportantLinkModal] =
     useState(false)
@@ -46,6 +54,26 @@ export function TripDetailsPage() {
 
   function closeManageGuestsModal() {
     setIsManageGuestsModal(false)
+  }
+
+  async function handleDeleteTrip() {
+    setIsDeleteTripSending(true)
+    const { status } = await api.delete(`/trips/${tripId}`)
+
+    switch (status) {
+      case 200:
+        toast.success('Viagem excluida com sucesso.')
+        setIsDeleteTripSending(false)
+        setTimeout(() => {
+          navigate('/user/trips')
+        }, 1000)
+        break
+
+      case 400:
+        toast.success('Erro ao excluir a viagem.')
+        setIsDeleteTripSending(false)
+        break
+    }
   }
 
   return (
@@ -79,6 +107,22 @@ export function TripDetailsPage() {
           <div className="w-full h-px bg-zinc-800" />
 
           <Guests openManageGuestsModal={openManageGuestsModal} />
+
+          {isDeleteTripSending ? (
+            <Button
+              disabled
+              onClick={handleDeleteTrip}
+              size="full"
+              variant="secondary"
+            >
+              <LoaderCircle className="size-5 text-zinc-400 animate-spin" />
+            </Button>
+          ) : (
+            <Button onClick={handleDeleteTrip} size="full" variant="secondary">
+              <Trash2 className="size-5 text-zinc-400" />
+              Excluir viagem
+            </Button>
+          )}
         </div>
       </main>
 

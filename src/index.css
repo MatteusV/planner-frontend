@@ -5,3 +5,31 @@
 * {
   min-width: 0;
 }
+/* For webkit-based browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.8); 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(85, 85, 85, 0.8); 
+}
+
+/* For Firefox */
+html {
+  scrollbar-width: thin;            /* "auto" or "thin" */
+  scrollbar-color: rgba(136, 136, 136, 0.8) transparent;  /* scroll thumb and track */
+}
+
+/* For Edge and IE */
+body {
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
