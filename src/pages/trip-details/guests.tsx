@@ -40,6 +40,7 @@ export function Guests({ openManageGuestsModal }: GuestsProps) {
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-xl">Convidados</h2>
         <button
+          title="Adicionar novo convidado"
           onClick={openInviteNewGuestModal}
           className="font-semibold text-xl"
         >

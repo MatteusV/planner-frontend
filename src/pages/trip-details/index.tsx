@@ -12,6 +12,7 @@ import { DestinationAndDateHeader } from './destination-and-date-header'
 import { Guests } from './guests'
 import { ImportantLinks } from './important-links'
 import { ManageGuestsModal } from './manage-guests-modal'
+import { UploadImage } from './upload-image'
 
 interface Activities {
   activities: {
@@ -107,6 +108,10 @@ export function TripDetailsPage() {
           <div className="w-full h-px bg-zinc-800" />
 
           <Guests openManageGuestsModal={openManageGuestsModal} />
+
+          <div className="w-full h-px bg-zinc-800" />
+          <UploadImage tripId={tripId!} />
+          <div className="w-full h-px bg-zinc-800" />
 
           {isDeleteTripSending ? (
             <Button

@@ -190,7 +190,7 @@ export function LoginModal({ closeLoginModal }: LoginModalProps) {
             </div>
 
             <Button type="submit" size="full">
-              Registrar
+              Login
             </Button>
           </form>
         </div>

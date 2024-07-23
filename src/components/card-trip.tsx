@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { ArrowRightIcon, PlaneIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,6 +10,7 @@ interface CardTripProps {
   destination: string
   ends_at: Date
   starts_at: Date
+  image_url?: string
   participants: {
     id: string
     name: string
@@ -21,6 +23,7 @@ export function CardTrip({
   starts_at,
   participants,
   id,
+  image_url,
 }: CardTripProps) {
   const navigate = useNavigate()
 
@@ -32,16 +35,22 @@ export function CardTrip({
     eventStartAndEndDates &&
     eventStartAndEndDates.from &&
     eventStartAndEndDates.to
-      ? format(eventStartAndEndDates.from, "d' de 'LLL")
+      ? format(eventStartAndEndDates.from, "d' de 'LLL", { locale: ptBR })
           .concat(' até ')
-          .concat(format(eventStartAndEndDates.to, "d' de 'LLL"))
+          .concat(
+            format(eventStartAndEndDates.to, "d' de 'LLL", { locale: ptBR }),
+          )
       : null
 
   return (
-    <div className="w-[380px] border rounded-lg border-zinc-700 shadow-shape">
-      <div className="bg-[#1c1c1c] rounded-lg overflow-hidden">
+    <div className="w-[380px] border rounded-lg border-zinc-700 shadow-shape ">
+      <div className="bg-[#1c1c1c] space-y-14 rounded-lg overflow-hidden">
         <div className="h-40 bg-gradient-to-r from-[#a3e635] to-[#00b894] flex items-center justify-center">
-          <PlaneIcon className="size-10" />
+          {image_url ? (
+            <img src={image_url} alt="Imagem da viagem." />
+          ) : (
+            <PlaneIcon className="size-10" />
+          )}
         </div>
         <div className="p-4">
           <h3 className="text-xl font-bold mb-2">Viagem para {destination}</h3>
@@ -49,7 +58,7 @@ export function CardTrip({
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               {participants.map((participant) => (
-                <UsersInTrips name={participant.name} />
+                <UsersInTrips key={participant.id} name={participant.name} />
               ))}
             </div>
             <button

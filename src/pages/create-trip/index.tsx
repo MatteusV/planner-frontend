@@ -29,6 +29,7 @@ export function CreateTripPage() {
   const [isGuestsInputOpen, setIsGuestsInputOpen] = useState(false)
   const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [createTripIsSubmitting, setCreateTripIsSubmitting] = useState(false)
   const [isConfirmTripModalOpen, setIsConfirmTripModalOpen] = useState(false)
   const [refreshToken, setRefreshToken] = useState('')
   const [usersToInvite, setUsersToInvite] = useState<UsersToInvite[]>([])
@@ -127,6 +128,8 @@ export function CreateTripPage() {
       return
     }
 
+    setCreateTripIsSubmitting(true)
+
     const response = await api.post('/trips', {
       destination,
       starts_at: eventStartAndEndDates.from,
@@ -136,6 +139,7 @@ export function CreateTripPage() {
     })
 
     const { tripId } = response.data
+    setCreateTripIsSubmitting(true)
 
     navigate(`/trips/${tripId}`)
   }
@@ -166,6 +170,7 @@ export function CreateTripPage() {
 
           {isGuestsInputOpen && (
             <InviteGuestsStep
+              createTripIsSubmitting={createTripIsSubmitting}
               usersToInvite={usersToInvite}
               openConfirmTripModal={openConfirmTripModal}
               openGuestsModal={openGuestsModal}

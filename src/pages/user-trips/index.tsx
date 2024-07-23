@@ -9,7 +9,7 @@ interface UserProps {
   id: string
   name: string
   email: string
-  imageUrl?: string
+  image_url?: string
 }
 
 interface TripsProps {
@@ -18,6 +18,7 @@ interface TripsProps {
   ends_at: Date
   starts_at: Date
   is_confirmed: boolean
+  image_url?: string
   participants: {
     id: string
     name: string
@@ -47,7 +48,7 @@ export function UserTripsPage() {
 
   return (
     <>
-      <Header name={user?.name} imageUrl={user?.imageUrl} />
+      <Header name={user?.name} imageUrl={user?.image_url} />
 
       <div className="px-6 py-4 space-y-8">
         <div className="flex flex-col gap-y-3 items-center md:block">
@@ -61,12 +62,13 @@ export function UserTripsPage() {
         <div className="grid md:grid-cols-4 gap-6 max-md:justify-center">
           {trips?.map((trip) => (
             <CardTrip
+              key={trip.id}
               id={trip.id}
               destination={trip.destination}
               ends_at={trip.ends_at}
               starts_at={trip.starts_at}
-              key={trip.id}
               participants={trip.participants}
+              image_url={trip.image_url}
             />
           ))}
           {trips?.length === 0 && (

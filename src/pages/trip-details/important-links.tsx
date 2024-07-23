@@ -1,9 +1,10 @@
 import { Link2, Plus, Trash2 } from 'lucide-react'
-import { Button } from '../../components/button'
 import { useEffect, useState } from 'react'
-import { api } from '../../lib/axios'
 import { useParams } from 'react-router-dom'
 import { toast } from 'sonner'
+
+import { Button } from '../../components/button'
+import { api } from '../../lib/axios'
 
 interface Link {
   id: string
